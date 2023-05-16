@@ -44,6 +44,7 @@ func main() {
 	r.HandleFunc("/account/{user_seq}", a.Select_account).Methods(http.MethodGet)
 
 	r.HandleFunc("/transaction", t.Account_transfer).Methods(http.MethodPost)
+	r.HandleFunc("/transaction/{account_num}", t.Select_transaction_history).Methods(http.MethodGet)
 
 	http.ListenAndServe(":8000", r)
 }

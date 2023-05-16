@@ -1,9 +1,5 @@
 package data
 
-import (
-	"time"
-)
-
 type C_user struct {
 	I_seq       int    `json:"seq"`
 	S_id        string `json:"id"`
@@ -20,11 +16,11 @@ type C_account struct {
 }
 
 type C_transaction struct {
-	I_seq         int       `json:"seq"`
-	S_account_num string    `json:"account_num"`
-	S_type        string    `json:"type"`
-	I_amount      int       `json:"amount"`
-	T_date        time.Time `json:"date"`
+	I_seq         int    `json:"seq"`
+	S_account_num string `json:"account_num"`
+	S_type        string `json:"type"`
+	I_amount      int    `json:"amount"`
+	T_date        string `json:"date"`
 }
 
 type C_transfer struct {

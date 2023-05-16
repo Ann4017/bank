@@ -5,7 +5,10 @@ import (
 	"bank/db"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type C_transaction_handler struct {
@@ -74,4 +77,45 @@ func (c *C_transaction_handler) Account_transfer(w http.ResponseWriter, r *http.
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (c *C_transaction_handler) Select_transaction_history(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	num, err := strconv.Atoi(vars["account_num"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	stmt, err := c.C_db.PC_sql_db.Prepare("select account_num, type, amount, date from transaction where account_num = ?")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(num)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	transactions := []data.C_transaction{}
+
+	for rows.Next() {
+		transaction := data.C_transaction{}
+		err := rows.Scan(&transaction.S_account_num, &transaction.S_type, &transaction.I_amount, &transaction.T_date)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		transactions = append(transactions, transaction)
+	}
+	if err = rows.Err(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(transactions)
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"bank/data"
 	"bank/db"
+	"bank/util"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -33,6 +34,8 @@ func (c *C_user_handler) Insert_user(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer stmt.Close()
+
+	user.S_password = util.Hash_password(user.S_password)
 
 	row, err := stmt.Exec(user.S_id, user.S_password, user.S_name, user.S_email, user.S_phone_num)
 	if err != nil {
