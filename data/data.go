@@ -26,3 +26,9 @@ type C_transaction struct {
 	I_amount      int       `json:"amount"`
 	T_date        time.Time `json:"date"`
 }
+
+type C_transfer struct {
+	S_from_account_num string `json:"from_account_num"`
+	S_to_account_num   string `json:"to_account_num"`
+	I_amount           int    `json:"amount"`
+}
